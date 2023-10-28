@@ -16,8 +16,7 @@ class DogImageGeneratorCubit extends Cubit<DogImageGeneratorState> {
     emit(state.copyWith(isLoading: true));
     final dogBreedsResult = await dataRepository?.getBreedsAndSubBreedsList();
     if (dogBreedsResult != null) {
-      emit(state.copyWith(
-          breedList: dogBreedsResult, isLoading: false));
+      emit(state.copyWith(breedList: dogBreedsResult, isLoading: false));
     }
   }
 
@@ -26,8 +25,7 @@ class DogImageGeneratorCubit extends Cubit<DogImageGeneratorState> {
 
     final dogBreedsResult = await dataRepository?.getBreedsAndSubBreedsList();
     if (dogBreedsResult != null) {
-      emit(state.copyWith(
-          subBreedList: dogBreedsResult, isLoading: false));
+      emit(state.copyWith(subBreedList: dogBreedsResult, isLoading: false));
     }
   }
 }
