@@ -1,3 +1,3 @@
 abstract class IDogRepository {
-  void getRandomImageByBreed();
+  Future<Map<String, List<String>>>? getBreedsAndSubBreedsList();
 }

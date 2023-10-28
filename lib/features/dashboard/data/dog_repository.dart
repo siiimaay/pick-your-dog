@@ -7,8 +7,7 @@ class DogBreedsRepository implements IDogRepository {
   DogBreedsRepository({required this.apiService});
 
   @override
-  Future<List<String>>? getRandomImageByBreed() {
-    // apiService.getRandomImageByBreed();
-    return null;
+  Future<Map<String, List<String>>>? getBreedsAndSubBreedsList() {
+    return apiService.getBreedsAndSubBreedsList();
   }
 }
