@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:pick_your_dog/features/dashboard/data/dog_api_result.dart';
 
 class ApiService {
   final Dio? dio;
@@ -15,11 +16,12 @@ class ApiService {
 
   Future<Map<String, List<String>>> getBreedsAndSubBreedsList() async {
     final response = await dio?.get('/breeds/list/all');
+    final responseData = BreedListResult.fromJson(response?.data);
 
-    final data = response?.data['message'] as Map<String, dynamic>;
+    final data = responseData.message;
 
     final breedsMap = data.map<String, List<String>>((key, value) {
-      final subBreeds = value is List ? List<String>.from(value) : <String>[];
+      final subBreeds = List<String>.from(value);
       return MapEntry<String, List<String>>(key, subBreeds);
     });
     return breedsMap;

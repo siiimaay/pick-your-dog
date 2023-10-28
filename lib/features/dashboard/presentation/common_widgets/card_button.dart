@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CardButton extends StatelessWidget {
   final String content;
-  final Function() onPressed;
+  final void Function(BuildContext) onPressed;
 
   const CardButton({
     super.key,
@@ -12,8 +12,8 @@ class CardButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: onPressed,
+    return InkWell(
+        onTap: () => onPressed(context),
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
@@ -35,9 +35,9 @@ class CardButton extends StatelessWidget {
                 right: 0,
                 child: Container(
                   padding: EdgeInsets.all(12),
-                  child: const Text(
-                    'Get by Breed',
-                    style: TextStyle(
+                  child: Text(
+                    content,
+                    style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w600),

@@ -1,3 +1,3 @@
 abstract class IDogRepository {
-  Future<Map<String, List<String>>>? getBreedsAndSubBreedsList();
+  Future<List<String>>? getBreedsAndSubBreedsList();
 }

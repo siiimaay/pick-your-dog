@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 class Dropdown<T> extends StatefulWidget {
   final List<T> items;
   final String hint;
-  final Function(List<T>) onSelectedItemsChanged;
-  final List<T> selectedItems;
+  final Function(String)? onItemSelect;
 
   const Dropdown({
     super.key,
     required this.items,
     required this.hint,
-    required this.onSelectedItemsChanged,
-    required this.selectedItems,
+    this.onItemSelect,
   });
 
   @override
@@ -90,7 +88,7 @@ class DropdownState<T> extends State<Dropdown<T>> {
                                       Icons.check_circle,
                                     )
                                   : null,
-                              onTap: () {
+                              onTap: () async {
                                 setState(() {
                                   _isExpanded = !_isExpanded;
                                   if (selectedItem == item) {
@@ -99,6 +97,7 @@ class DropdownState<T> extends State<Dropdown<T>> {
                                     selectedItem = item;
                                   }
                                 });
+                                await widget.onItemSelect?.call(selectedItem);
                               },
                             );
                           },
