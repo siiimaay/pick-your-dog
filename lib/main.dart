@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pick_your_dog/features/dashboard/presentation/common_widgets/card_button.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,19 +35,21 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'hey there',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      body: Container(
+        padding: EdgeInsets.only(top: 280),
+        child: GridView.count(
+          physics: NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
+          mainAxisSpacing: 20,
+          childAspectRatio: 0.8,
+          crossAxisSpacing: 15,
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          children: List.generate(
+              4,
+              (index) => CardButton(
+                    content: "Hey",
+                    onPressed: () {},
+                  )),
         ),
       ),
     );
