@@ -22,6 +22,7 @@ class ImageView extends StatelessWidget {
             children: imageList
                 .map(
                   (imageUrl) => Image.network(
+                    key: Key("image_key"),
                     imageUrl,
                     width: 200,
                     height: 200,

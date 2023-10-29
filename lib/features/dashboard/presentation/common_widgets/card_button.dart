@@ -23,7 +23,7 @@ class CardButton extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(16.0),
                 child: Image.asset(
-                  'assets/images/dog_main.png',
+                  'assets/images/main_dog.png',
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: 400,
@@ -32,15 +32,25 @@ class CardButton extends StatelessWidget {
               ),
               Positioned(
                 bottom: 0,
-                right: 0,
+                left: 0,
+                right: 5,
                 child: Container(
-                  padding: EdgeInsets.all(12),
-                  child: Text(
-                    content,
-                    style: const TextStyle(
+                  child: Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: Color(0xff36454f).withOpacity(0.3),
+                    ),
+                    child: Text(
+                      content,
+                      maxLines: 2,
+                      style: TextStyle(
                         color: Colors.white,
+                        fontFamily: 'Inter',
                         fontSize: 16,
-                        fontWeight: FontWeight.w600),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
               ),
