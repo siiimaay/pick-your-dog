@@ -155,8 +155,19 @@ class ImageGenerationBlocBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DogImageGeneratorCubit, DogImageGeneratorState>(
-        builder: (context, state) {
+    return BlocConsumer<DogImageGeneratorCubit, DogImageGeneratorState>(
+        listener: (context, state) {
+      if (state.hasError) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Breed without sub breed is not allowed for this operation. Please select with breed with a sub breed.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }, builder: (context, state) {
       final breeds = state.breedList;
       final subBreeds = state.subBreedList;
       return AnimatedSwitcher(
@@ -170,7 +181,7 @@ class ImageGenerationBlocBuilder extends StatelessWidget {
                     Center(
                       child: Text("Generate Image",
                           style: TextStyle(
-                            color: Color(0xff36454f).withOpacity(0.9),
+                            color: const Color(0xff36454f).withOpacity(0.9),
                             fontFamily: 'Inter',
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
@@ -178,11 +189,11 @@ class ImageGenerationBlocBuilder extends StatelessWidget {
                     ),
                     const SizedBox(height: 30),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 14),
                       child: Text("Choose breed",
                           style: TextStyle(
-                            color: Color(0xff36454f).withOpacity(0.7),
+                            color: const Color(0xff36454f).withOpacity(0.7),
                             fontFamily: 'Inter',
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -199,11 +210,11 @@ class ImageGenerationBlocBuilder extends StatelessWidget {
                     if (state.subBreedList.isNotEmpty &&
                         hasSubBreedRequired) ...[
                       Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 14),
                         child: Text("Choose breed",
                             style: TextStyle(
-                              color: Color(0xff36454f).withOpacity(0.7),
+                              color: const Color(0xff36454f).withOpacity(0.7),
                               fontFamily: 'Inter',
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
