@@ -33,16 +33,53 @@ class DogImageGeneratorCubit extends Cubit<DogImageGeneratorState> {
     }
   }
 
+  void updateSelectedSubBreed(String subBreed) {
+    emit(state.copyWith(selectedSubreed: subBreed));
+  }
+
   Future<void> getRandomImageByBreed() async {
-    print("here");
     emit(state.copyWith(isLoading: true));
     final dogBreedsResult =
         await dataRepository?.getRandomDogByBreed(state.selectedBreed);
-    print(dogBreedsResult);
     if (dogBreedsResult != null) {
-      print(dogBreedsResult.message);
       emit(state.copyWith(
           imageList: [dogBreedsResult.message],
+          hasSelectionDone: true,
+          isLoading: false));
+    }
+  }
+
+  Future<void> getRandomImageBySubBreed() async {
+    emit(state.copyWith(isLoading: true));
+    final dogBreedsResult = await dataRepository?.getRandomDogBySubBreed(
+        state.selectedSubreed, state.selectedBreed);
+    if (dogBreedsResult != null) {
+      emit(state.copyWith(
+          imageList: [dogBreedsResult.message],
+          hasSelectionDone: true,
+          isLoading: false));
+    }
+  }
+
+  Future<void> getDogListImageByBreed() async {
+    emit(state.copyWith(isLoading: true));
+    final dogBreedsResult =
+        await dataRepository?.getDogListByBreed(state.selectedBreed);
+    if (dogBreedsResult != null) {
+      emit(state.copyWith(
+          imageList: dogBreedsResult.message,
+          hasSelectionDone: true,
+          isLoading: false));
+    }
+  }
+
+  Future<void> getDogListBySubBreed() async {
+    emit(state.copyWith(isLoading: true));
+    final dogBreedsResult = await dataRepository?.getDogListBySubBreed(
+        state.selectedBreed, state.selectedSubreed);
+    if (dogBreedsResult != null) {
+      emit(state.copyWith(
+          imageList: dogBreedsResult.message,
           hasSelectionDone: true,
           isLoading: false));
     }
@@ -53,6 +90,7 @@ final class DogImageGeneratorState {
   final List<String> breedList;
   final bool isLoading;
   final String selectedBreed;
+  final String selectedSubreed;
   final List<String> subBreedList;
   final List<String> imageList;
   final bool hasSelectionDone;
@@ -64,6 +102,7 @@ final class DogImageGeneratorState {
     this.subBreedList = const [],
     this.imageList = const [],
     this.hasSelectionDone = false,
+    this.selectedSubreed = "",
   });
 
   DogImageGeneratorState copyWith({
@@ -73,6 +112,7 @@ final class DogImageGeneratorState {
     String? selectedBreed,
     List<String>? imageList,
     bool? hasSelectionDone,
+    String? selectedSubreed,
   }) {
     return DogImageGeneratorState(
       breedList: breedList ?? this.breedList,
@@ -81,6 +121,7 @@ final class DogImageGeneratorState {
       selectedBreed: selectedBreed ?? this.selectedBreed,
       imageList: imageList ?? this.imageList,
       hasSelectionDone: hasSelectionDone ?? this.hasSelectionDone,
+      selectedSubreed: selectedSubreed ?? this.selectedSubreed,
     );
   }
 }

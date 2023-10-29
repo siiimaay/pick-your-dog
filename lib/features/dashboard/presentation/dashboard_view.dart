@@ -23,26 +23,44 @@ class DashboardView extends StatelessWidget {
             children: [
               CardButton(
                   content: "Card 1",
-                  onPressed: (ctx) {
+                  onPressed: (context) {
                     showBottomSheet(
-                        context: ctx,
-                        onAction: (ct) {
-                          _cubit(ct).getRandomImageByBreed();
+                        context: context,
+                        onAction: (ctx) {
+                          _cubit(ctx).getRandomImageByBreed();
                         });
                   }),
               CardButton(
                 content: "Card 2",
-                onPressed: (context) {},
+                onPressed: (context) {
+                  showBottomSheet(
+                      context: context,
+                      onAction: (ctx) {
+                        _cubit(ctx).getDogListImageByBreed();
+                      });
+                },
               ),
               CardButton(
                 content: "Card 3",
                 onPressed: (ctx) {
-                  showBottomSheet(context: ctx);
+                  showBottomSheet(
+                      context: context,
+                      hasSubBreedRequired: true,
+                      onAction: (ctx) {
+                        _cubit(ctx).getRandomImageBySubBreed();
+                      });
                 },
               ),
               CardButton(
                 content: "Card 4",
-                onPressed: (context) {},
+                onPressed: (context) {
+                  showBottomSheet(
+                      context: context,
+                      hasSubBreedRequired: true,
+                      onAction: (ctx) {
+                        _cubit(ctx).getDogListBySubBreed();
+                      });
+                },
               ),
             ],
           )),
@@ -109,7 +127,7 @@ class ImageGenerationBlocBuilder extends StatelessWidget {
       final breeds = state.breedList;
       final subBreeds = state.subBreedList;
       return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 1000),
           switchInCurve: Curves.bounceInOut,
           child: !state.hasSelectionDone
               ? Column(
@@ -147,6 +165,8 @@ class ImageGenerationBlocBuilder extends StatelessWidget {
                         child: Dropdown(
                           items: subBreeds,
                           hint: "Pick Sub Breed",
+                          onItemSelect: (String value) =>
+                              _cubit(context).updateSelectedSubBreed(value),
                         ),
                       ),
                     ],
@@ -163,24 +183,7 @@ class ImageGenerationBlocBuilder extends StatelessWidget {
                     )
                   ],
                 )
-              : Container(
-                  width: MediaQuery.of(context).size.width,
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                    bottomLeft: Radius.zero,
-                    bottomRight: Radius.zero,
-                  )),
-                  child: Column(
-                    children: [
-                      ImageView(
-                          children: state.imageList
-                              .map((e) => Image.network(e))
-                              .toList()),
-                    ],
-                  ),
-                ));
+              : ImageView(imageList: state.imageList));
     });
   }
 }
