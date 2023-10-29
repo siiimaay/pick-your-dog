@@ -35,21 +35,19 @@ class CardButton extends StatelessWidget {
                 left: 0,
                 right: 5,
                 child: Container(
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: Color(0xff36454f).withOpacity(0.3),
-                    ),
-                    child: Text(
-                      content,
-                      maxLines: 2,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Inter',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: const Color(0xff36454f).withOpacity(0.3),
+                  ),
+                  child: Text(
+                    content,
+                    maxLines: 2,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),

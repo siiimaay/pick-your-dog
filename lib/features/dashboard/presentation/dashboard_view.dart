@@ -17,7 +17,7 @@ class DashboardView extends StatelessWidget {
       body: Column(
         children: [
           ClipPath(
-              clipper: BackgroundWaveClipper(),
+              clipper: HeaderWaveClipper(),
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: 280,
@@ -25,7 +25,7 @@ class DashboardView extends StatelessWidget {
                     gradient: LinearGradient(
                   colors: [
                     Color(0xFFD1C4E9),
-                    Color(0xFFBBDEFB), //
+                    Color(0xFFBBDEFB),
                   ],
                 )),
                 child: Center(
