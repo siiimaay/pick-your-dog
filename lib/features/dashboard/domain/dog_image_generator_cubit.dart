@@ -16,38 +16,71 @@ class DogImageGeneratorCubit extends Cubit<DogImageGeneratorState> {
     emit(state.copyWith(isLoading: true));
     final dogBreedsResult = await dataRepository?.getBreedsAndSubBreedsList();
     if (dogBreedsResult != null) {
-      emit(state.copyWith(breedList: dogBreedsResult, isLoading: false));
+      emit(state.copyWith(
+          breedList: dogBreedsResult.keys.toList(), isLoading: false));
     }
   }
 
   Future<void> getSubBreedByBreed(String breed) async {
     emit(state.copyWith(isLoading: true));
-
     final dogBreedsResult = await dataRepository?.getBreedsAndSubBreedsList();
     if (dogBreedsResult != null) {
-      emit(state.copyWith(subBreedList: dogBreedsResult, isLoading: false));
+      emit(state.copyWith(
+        selectedBreed: breed,
+        subBreedList: dogBreedsResult[breed],
+        isLoading: false,
+      ));
+    }
+  }
+
+  Future<void> getRandomImageByBreed() async {
+    print("here");
+    emit(state.copyWith(isLoading: true));
+    final dogBreedsResult =
+        await dataRepository?.getRandomDogByBreed(state.selectedBreed);
+    print(dogBreedsResult);
+    if (dogBreedsResult != null) {
+      print(dogBreedsResult.message);
+      emit(state.copyWith(
+          imageList: [dogBreedsResult.message],
+          hasSelectionDone: true,
+          isLoading: false));
     }
   }
 }
 
 final class DogImageGeneratorState {
   final List<String> breedList;
-  final List<String> subBreedList;
   final bool isLoading;
+  final String selectedBreed;
+  final List<String> subBreedList;
+  final List<String> imageList;
+  final bool hasSelectionDone;
 
-  DogImageGeneratorState(
-      {this.breedList = const [],
-      this.subBreedList = const [],
-      this.isLoading = false});
+  DogImageGeneratorState({
+    this.breedList = const [],
+    this.isLoading = false,
+    this.selectedBreed = "",
+    this.subBreedList = const [],
+    this.imageList = const [],
+    this.hasSelectionDone = false,
+  });
 
   DogImageGeneratorState copyWith({
     List<String>? breedList,
-    List<String>? subBreedList,
     bool? isLoading,
+    List<String>? subBreedList,
+    String? selectedBreed,
+    List<String>? imageList,
+    bool? hasSelectionDone,
   }) {
     return DogImageGeneratorState(
-        breedList: breedList ?? this.breedList,
-        subBreedList: subBreedList ?? this.subBreedList,
-        isLoading: isLoading ?? false);
+      breedList: breedList ?? this.breedList,
+      isLoading: isLoading ?? false,
+      subBreedList: subBreedList ?? this.subBreedList,
+      selectedBreed: selectedBreed ?? this.selectedBreed,
+      imageList: imageList ?? this.imageList,
+      hasSelectionDone: hasSelectionDone ?? this.hasSelectionDone,
+    );
   }
 }

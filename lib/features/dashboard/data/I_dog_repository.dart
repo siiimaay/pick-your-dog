@@ -1,3 +1,6 @@
+import 'package:pick_your_dog/features/dashboard/data/dog_image_result.dart';
+
 abstract class IDogRepository {
-  Future<List<String>>? getBreedsAndSubBreedsList();
+  Future<Map<String, List<String>?>> getBreedsAndSubBreedsList();
+  Future<DogImageResult>? getRandomDogByBreed(String breed);
 }

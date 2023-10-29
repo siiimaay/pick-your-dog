@@ -4,8 +4,7 @@ import 'package:pick_your_dog/features/dashboard/domain/dog_image_generator_cubi
 import 'package:pick_your_dog/features/dashboard/presentation/common_widgets/card_button.dart';
 import 'package:pick_your_dog/features/dashboard/presentation/common_widgets/dropdown.dart';
 import 'package:pick_your_dog/features/dashboard/presentation/common_widgets/submit_button.dart';
-
-import '../data/card_data.dart';
+import 'package:pick_your_dog/features/dashboard/presentation/image_view/image_view.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
@@ -16,55 +15,44 @@ class DashboardView extends StatelessWidget {
       body: Container(
           padding:
               const EdgeInsets.symmetric(horizontal: 15).copyWith(top: 200),
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 20,
-              childAspectRatio: 0.8,
-              crossAxisSpacing: 15,
-            ),
-            itemCount: cardDataList.length,
-            itemBuilder: (context, index) {
-              return CardButton(
-                content: cardDataList[index].content,
-                onPressed: (context) {
-                  cardDataList[index].onPressed(context);
+          child: GridView.count(
+            crossAxisCount: 2,
+            mainAxisSpacing: 20,
+            childAspectRatio: 0.8,
+            crossAxisSpacing: 15,
+            children: [
+              CardButton(
+                  content: "Card 1",
+                  onPressed: (ctx) {
+                    showBottomSheet(
+                        context: ctx,
+                        onAction: (ct) {
+                          _cubit(ct).getRandomImageByBreed();
+                        });
+                  }),
+              CardButton(
+                content: "Card 2",
+                onPressed: (context) {},
+              ),
+              CardButton(
+                content: "Card 3",
+                onPressed: (ctx) {
+                  showBottomSheet(context: ctx);
                 },
-              );
-            },
+              ),
+              CardButton(
+                content: "Card 4",
+                onPressed: (context) {},
+              ),
+            ],
           )),
     );
   }
 }
 
-List<CardData> cardDataList = [
-  CardData(
-      content: 'Card 1',
-      onPressed: (context) {
-        showBottomSheet(
-          context: context,
-        );
-      }),
-  CardData(
-      content: 'Card 2',
-      onPressed: (context) {
-        showBottomSheet(context: context);
-      }),
-  CardData(
-      content: 'Card 3',
-      onPressed: (context) {
-        showBottomSheet(context: context, hasSubBreedRequired: true);
-      }),
-  CardData(
-      content: 'Card 4',
-      onPressed: (context) {
-        showBottomSheet(context: context, hasSubBreedRequired: true);
-      })
-];
-
 void showBottomSheet({
   required BuildContext context,
-  Function()? onAction,
+  Function(BuildContext)? onAction,
   bool hasSubBreedRequired = false,
 }) {
   showModalBottomSheet<void>(
@@ -90,10 +78,14 @@ void showBottomSheet({
             ),
             child: BlocProvider<DogImageGeneratorCubit>(
               create: (context) => DogImageGeneratorCubit(),
-              child: ImageGenerationBlocBuilder(
-                onAction: onAction,
-                hasSubBreedRequired: hasSubBreedRequired,
-              ),
+              child: Builder(builder: (context) {
+                return ImageGenerationBlocBuilder(
+                  onAction: (context) {
+                    onAction!(context);
+                  },
+                  hasSubBreedRequired: hasSubBreedRequired,
+                );
+              }),
             )),
       );
     },
@@ -101,7 +93,7 @@ void showBottomSheet({
 }
 
 class ImageGenerationBlocBuilder extends StatelessWidget {
-  final Function()? onAction;
+  final Function(BuildContext) onAction;
   final bool hasSubBreedRequired;
 
   const ImageGenerationBlocBuilder({
@@ -116,57 +108,79 @@ class ImageGenerationBlocBuilder extends StatelessWidget {
         builder: (context, state) {
       final breeds = state.breedList;
       final subBreeds = state.subBreedList;
-      if (state.isLoading) return Center(child: CircularProgressIndicator());
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Center(
-            child: Text(
-              "Generate Image",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-            ),
-          ),
-          const SizedBox(height: 30),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-            child: Text("Choose breed"),
-          ),
-          Flexible(
-            child: Dropdown(
-                items: breeds,
-                hint: "Pick breed",
-                onItemSelect: (String value) =>
-                    _cubit(context).getSubBreedByBreed(value)),
-          ),
-          if (state.subBreedList.isNotEmpty && hasSubBreedRequired) ...[
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-              child: Text("Choose breed"),
-            ),
-            Flexible(
-              child: Dropdown(
-                items: subBreeds,
-                hint: "Pick Sub Breed",
-              ),
-            ),
-          ],
-          const Spacer(),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(40.0),
-              child: SubmitButton(
-                buttonText: 'Generate Image!',
-                onPressed: () {
-                  onAction;
-                  Navigator.of(context).pop();
-                },
-                color: Colors.indigo,
-              ),
-            ),
-          )
-        ],
-      );
+      return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          switchInCurve: Curves.bounceInOut,
+          child: !state.hasSelectionDone
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Center(
+                      child: Text(
+                        "Generate Image",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    const Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                      child: Text("Choose breed"),
+                    ),
+                    Flexible(
+                      child: Dropdown(
+                          items: breeds,
+                          hint: "Pick breed",
+                          onItemSelect: (String value) =>
+                              _cubit(context).getSubBreedByBreed(value)),
+                    ),
+                    if (state.subBreedList.isNotEmpty &&
+                        hasSubBreedRequired) ...[
+                      const Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                        child: Text("Choose breed"),
+                      ),
+                      Flexible(
+                        child: Dropdown(
+                          items: subBreeds,
+                          hint: "Pick Sub Breed",
+                        ),
+                      ),
+                    ],
+                    const Spacer(),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(40.0),
+                        child: SubmitButton(
+                          buttonText: 'Generate Image!',
+                          onPressed: () => onAction(context),
+                          color: Colors.indigo,
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              : Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                    bottomLeft: Radius.zero,
+                    bottomRight: Radius.zero,
+                  )),
+                  child: Column(
+                    children: [
+                      ImageView(
+                          children: state.imageList
+                              .map((e) => Image.network(e))
+                              .toList()),
+                    ],
+                  ),
+                ));
     });
   }
 }
